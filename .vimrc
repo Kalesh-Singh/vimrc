@@ -10,6 +10,36 @@ set tabstop=4        " tab width is 4 spaces
 set shiftwidth=4     " indent also with 4 spaces
 set expandtab        " expand tabs to spaces
 
+" Detect and use existing file indentation IOW am i working on Linux kernel
+function TabsOrSpaces()
+    " Determines whether to use spaces or tabs on the current buffer.
+    if getfsize(bufname("%")) > 256000
+        " File is very large, just use the default.
+        return
+    endif
+
+    let numTabs=len(filter(getbufline(bufname("%"), 1, 250), 'v:val =~ "^\\t[^\\s]"'))
+    let num4Spaces=len(filter(getbufline(bufname("%"), 1, 250), 'v:val =~ "^\\s{4}[^\\s]"'))
+    let num2Spaces=len(filter(getbufline(bufname("%"), 1, 250), 'v:val =~ "^\\s{2}[^\\s]"'))
+
+    if numTabs > num4Spaces && numTabs > num2Spaces
+        setlocal shiftwidth=8
+        setlocal tabstop=8
+        setlocal noexpandtab
+    elseif num2Spaces > num4Spaces
+        setlocal shiftwidth=2
+        setlocal tabstop=2
+        setlocal expandtab
+    else
+        setlocal shiftwidth=4
+        setlocal tabstop=4
+        setlocal expandtab
+    endif
+endfunction
+
+" Call the function after opening a buffer
+autocmd BufReadPost * call TabsOrSpaces()
+
 " wrap lines at 120 chars. 80 is somewaht antiquated with nowadays displays.
 set textwidth=120
 
