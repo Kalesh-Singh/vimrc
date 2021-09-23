@@ -198,6 +198,11 @@ Plug 'tpope/vim-surround'
 " Use ys<motion><s-char> to surround motion with <s-char>
 " e.g ysiw<em> or ysiw"
 
+Plug 'tpope/vim-fugitive'
+" NOW WE CAN:
+" Use :Git <command> directly in vim
+" The most useful for me in :Git blame
+
 call plug#end()
 
 " PLUGIN CONFIGURATIONS:
